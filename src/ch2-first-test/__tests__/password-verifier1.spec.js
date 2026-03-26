@@ -71,9 +71,8 @@ describe("v3: PasswordVerifier1", () => {
 // Use `beforeEach()` to reduce duplication.
 // Mistakes/problems:
 // - `errors` isn't reset.
-// - tests are run in parallel, which may lead to shared state problems
-//   like overwriting each others values.  (Said by the book for jest, but
-//   is that actually the case there and/or for vitest?)
+// - Tests are run in parallel, which may lead to shared state problems
+//   like overwriting each other's values.
 describe("v4: PasswordVerifier1", () => {
   let verifier;
   beforeEach(() => (verifier = new PasswordVerifier1()));
@@ -94,6 +93,88 @@ describe("v4: PasswordVerifier1", () => {
       errors = verifier.verify("any value");
 
       expect(errors.length).toBe(1);
+    });
+  });
+});
+
+// As before, but now we're also putting the Act (of arrange-act-assert)
+// into the `beforeEach()` as well.
+describe("v5: PasswordVerifier1", () => {
+  let verifier;
+  beforeEach(() => (verifier = new PasswordVerifier1()));
+  describe("with a failing rule", () => {
+    let fakeRule, errors;
+    beforeEach(() => {
+      fakeRule = (input) => ({ passed: false, reason: "fake reason" + input });
+      verifier.addRule(fakeRule);
+      errors = verifier.verify("any value");
+    });
+
+    it("has an error message based on the rule.reason", () => {
+      expect(errors[0]).toContain("fake reason");
+    });
+
+    it("has exactly one error", () => {
+      expect(errors.length).toBe(1);
+    });
+  });
+});
+
+// As before, but with even more scenarios.
+// New problems raising their heads:
+// - Duplication has returned.
+// - Scroll fatigue: have to scroll up repeatedly to get test contexts.  It's
+//   also easier to mix up which state goes with each `it()`.
+describe("v6: PasswordVerifier1", () => {
+  let verifier;
+  beforeEach(() => (verifier = new PasswordVerifier1()));
+  describe("with a failing rule", () => {
+    let fakeRule, errors;
+    beforeEach(() => {
+      fakeRule = (input) => ({ passed: false, reason: "fake reason" + input });
+      verifier.addRule(fakeRule);
+      errors = verifier.verify("any value");
+    });
+
+    it("has an error message based on the rule.reason", () => {
+      expect(errors[0]).toContain("fake reason");
+    });
+
+    it("has exactly one error", () => {
+      expect(errors.length).toBe(1);
+    });
+  });
+  describe("with a passing rule", () => {
+    let fakeRule, errors;
+    beforeEach(() => {
+      fakeRule = (input) => ({ passed: true, reason: "" });
+      verifier.addRule(fakeRule);
+      errors = verifier.verify("any value");
+    });
+
+    it("has no errors", () => {
+      expect(errors.length).toBe(0);
+    });
+  });
+  describe("with a failing and a passing rule", () => {
+    let fakeRulePass, fakeRuleFail, errors;
+    beforeEach(() => {
+      fakeRulePass = (input) => ({ passed: true, reason: "fake success" });
+      fakeRuleFail = (input) => ({
+        passed: false,
+        reason: "fake reason" + input,
+      });
+      verifier.addRule(fakeRulePass);
+      verifier.addRule(fakeRuleFail);
+      errors = verifier.verify("any value");
+    });
+
+    it("has one error", () => {
+      expect(errors.length).toBe(1);
+    });
+
+    it("error text belongs to failed rule", () => {
+      expect(errors[0]).toContain("fake reason");
     });
   });
 });
