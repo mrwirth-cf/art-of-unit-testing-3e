@@ -1,4 +1,5 @@
 import { PasswordVerifier1 } from "../password-verifier1.js";
+import { expect } from "vitest";
 
 describe("v1: PasswordVerifier1", () => {
   describe("with a failing rule", () => {
@@ -316,4 +317,32 @@ test("PasswordVerifier1, with a failing and a passing rule, error text belongs t
   verifier.addRule(passingRule);
   const errors = verifier.verify("any value");
   expect(errors[0]).toContain("fake reason");
+});
+
+// Test for expected thrown exception.  This version uses `try...catch`
+// and `fail()`, which is not the best approach.  It's wordy, `fail()` in
+// jest is outdated and doesn't exist in vitest, and there's a more
+// direct approach available (see next).
+//
+// Due to `fail()` not existing here, an alternative detection method is
+// used: `expect.assertions(expected)`, which is better but still leaves
+// us using `try...catch`.
+test("v10: verify, with no rules, throws exceptions", () => {
+  const verifier = makeVerifier();
+  try {
+    verifier.verify("any value");
+    // fail("error was expected but not thrown");
+  } catch (e) {
+    expect(e.message).toContain("no rules configured");
+  }
+
+  expect.assertions(1);
+});
+
+// Test for expected thrown exception using a built-in method.
+test("v11: verify, with no rules, throws exceptions", () => {
+  const verifier = makeVerifier();
+  expect(() => verifier.verify("any value")).toThrow(/no rules configured/);
+
+  expect.assertions(1);
 });
