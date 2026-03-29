@@ -5,22 +5,19 @@ import {
   verifyPassword2,
   verifyPassword3,
 } from "./password-verifier-time00.js";
-
-const SUNDAY = 0,
-  SATURDAY = 6,
-  MONDAY = 1;
+import { DaysOfWeek } from "../DaysOfWeek.js";
 
 describe("verifier", () => {
   const TODAY = dayjs().day();
 
   // test is always executed, but might not do anything.
   test("on weekends, throws exceptions", () => {
-    if ([SATURDAY, SUNDAY].includes(TODAY)) {
+    if ([DaysOfWeek.SATURDAY, DaysOfWeek.SUNDAY].includes(TODAY)) {
       expect(() => verifyPassword("anything", [])).toThrow("It's the weekend!");
     }
   });
   // test is not executed on weekdays at all
-  if ([SATURDAY, MONDAY].includes(TODAY)) {
+  if ([DaysOfWeek.SATURDAY, DaysOfWeek.SUNDAY].includes(TODAY)) {
     test("on a weekend, throws an error", () => {
       expect(() => verifyPassword("anything", [])).toThrow("It's the weekend!");
     });
@@ -31,7 +28,7 @@ describe("verifier", () => {
 // figure out the day itself - a "dummy"/"dummy object".
 describe("verifier2 - dummy object", () => {
   test("on weekends, throws exceptions", () => {
-    expect(() => verifyPassword2("anything", [], SUNDAY)).toThrow(
+    expect(() => verifyPassword2("anything", [], DaysOfWeek.SUNDAY)).toThrow(
       "It's the weekend!",
     );
   });
@@ -40,9 +37,15 @@ describe("verifier2 - dummy object", () => {
 // Use a dummy function instead of a dummy object.
 describe("verifier3 - dummy function", () => {
   test("on weekends, throws exceptions", () => {
-    const alwaysSunday = () => SUNDAY;
+    const alwaysSunday = () => DaysOfWeek.SUNDAY;
     expect(() => verifyPassword3("anything", [], alwaysSunday)).toThrow(
       "It's the weekend!",
     );
+  });
+  test("on weekdays, works fine", () => {
+    const alwaysMonday = () => DaysOfWeek.MONDAY;
+
+    const result = verifyPassword3("anything", [], alwaysMonday);
+    expect(result.length).toBe(0);
   });
 });

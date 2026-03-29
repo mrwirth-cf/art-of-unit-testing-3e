@@ -1,8 +1,5 @@
-import {
-  DaysOfWeek,
-  inject,
-  verifyPassword,
-} from "./password-verifier-time00-modular.js";
+import { inject, verifyPassword } from "./password-verifier-time00-modular.js";
+import { DaysOfWeek } from "../DaysOfWeek.js";
 
 // Helper function for injecting the day we want to test into verifyPassword.
 const injectDate = (newDay) => {

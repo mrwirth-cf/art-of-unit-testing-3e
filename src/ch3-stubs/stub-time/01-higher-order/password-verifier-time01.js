@@ -1,12 +1,4 @@
-const DaysOfWeek = {
-  SUNDAY: 0,
-  MONDAY: 1,
-  TUESDAY: 2,
-  WEDNESDAY: 3,
-  THURSDAY: 4,
-  FRIDAY: 5,
-  SATURDAY: 6,
-};
+import { DaysOfWeek } from "../DaysOfWeek.js";
 
 // Curried function
 const makeVerifier = (rules, dayOfWeekFn) => {
@@ -18,7 +10,7 @@ const makeVerifier = (rules, dayOfWeekFn) => {
   };
 };
 
-// Constructor function
+// Constructor function pattern
 const Verifier = function (rules, dayOfWeekFn) {
   this.verify = function (input) {
     if ([DaysOfWeek.SATURDAY, DaysOfWeek.SUNDAY].includes(dayOfWeekFn())) {
@@ -28,4 +20,21 @@ const Verifier = function (rules, dayOfWeekFn) {
   };
 };
 
-export { DaysOfWeek, makeVerifier, Verifier };
+// Class with constructor injection pattern
+class PasswordVerifier {
+  constructor(rules, dayOfWeekFn) {
+    this.rules = rules;
+    this.dayOfWeek = dayOfWeekFn;
+  }
+
+  verify(input) {
+    if ([DaysOfWeek.SATURDAY, DaysOfWeek.SUNDAY].includes(this.dayOfWeek())) {
+      throw new Error("It's the weekend!");
+    }
+    const errors = [];
+    // more code goes here...
+    return errors;
+  }
+}
+
+export { makeVerifier, PasswordVerifier, Verifier };
