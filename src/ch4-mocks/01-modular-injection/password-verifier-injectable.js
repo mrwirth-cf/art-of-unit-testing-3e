@@ -1,12 +1,27 @@
-import { info, debug } from "./complicated-logger.js";
-import { getLogLevel } from "./configuration-service.js";
+import * as logger from "./complicated-logger.js";
+import * as configs from "./configuration-service.js";
+
+const originalDependencies = {
+  log: logger,
+  configs,
+};
+
+let dependencies = { ...originalDependencies };
+
+const resetDependencies = () => {
+  dependencies = { ...originalDependencies };
+};
+
+const injectDependencies = (fakes) => {
+  Object.assign(dependencies, fakes);
+};
 
 const log = (text) => {
-  if (getLogLevel() === "info") {
-    info(text);
+  if (dependencies.configs.getLogLevel() === "info") {
+    dependencies.log.info(text);
   }
-  if (getLogLevel() === "debug") {
-    debug(text);
+  if (dependencies.configs.getLogLevel() === "debug") {
+    dependencies.log.debug(text);
   }
 };
 
@@ -24,4 +39,4 @@ const verifyPassword = (input, rules) => {
   return false;
 };
 
-export { verifyPassword };
+export { injectDependencies, resetDependencies, verifyPassword };
