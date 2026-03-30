@@ -1,6 +1,6 @@
-import type { ILogger } from "./logger";
+import type { ILogger } from "./interfaces/logger";
 import { expect, test } from "vitest";
-import { PasswordVerifier } from "../00-password-verifier";
+import { PasswordVerifier } from "./00-password-verifier";
 
 class FakeLogger implements ILogger {
   written: string | undefined;
