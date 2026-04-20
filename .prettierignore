@@ -1,3 +1,9 @@
 # Ignore artifacts:
 build
 coverage
+
+# Other
+.github
+src/counter.ts
+src/main.ts
+src/style.css

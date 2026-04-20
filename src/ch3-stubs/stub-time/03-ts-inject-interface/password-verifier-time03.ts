@@ -10,7 +10,8 @@ export class PasswordVerifier {
     this._timeProvider = timeProvider;
   }
 
-  verify(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  verify(_input: string): string[] {
     const isWeekend =
       [DaysOfWeek.SATURDAY, DaysOfWeek.SUNDAY].filter(
         (x) => x === this._timeProvider.getDay(),

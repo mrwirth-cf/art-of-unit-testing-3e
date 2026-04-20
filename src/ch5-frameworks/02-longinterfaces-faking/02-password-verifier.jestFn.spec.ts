@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { IComplicatedLogger } from "./interfaces/complicated-logger.ts";
 import { PasswordVerifier } from "./00-password-verifier.ts";
 

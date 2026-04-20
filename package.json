@@ -8,7 +8,11 @@
     "ch1": "node src/ch1-basics/custom-test-phase1.js && node src/ch1-basics/custom-test-phase2.js && node src/ch1-basics/custom-test-phase3.js",
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:lint": "eslint",
+    "check:prettier": "prettier . --check",
+    "check:tsc": "tsc",
+    "verify": "npm run check:prettier && npm run check:lint && npm run check:tsc && vitest --run"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
