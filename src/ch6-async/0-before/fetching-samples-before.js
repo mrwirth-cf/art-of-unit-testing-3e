@@ -10,7 +10,6 @@ export const isWebsiteAliveWithCallback = (callback) => {
     })
     .then((response) => response.text())
     .then((text) => {
-      console.log(text);
       if (text.includes("Example Domain")) {
         callback({ success: true, status: "ok" });
       } else {
